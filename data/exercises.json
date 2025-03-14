@@ -1,0 +1,127 @@
+[
+    {
+      "id": "push-up",
+      "title": "Push-Up",
+      "level": "Beginner",
+      "imageUrl": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070&auto=format&fit=crop",
+      "description": "The push-up is a classic bodyweight exercise that targets the chest, shoulders, and triceps.",
+      "muscleGroups": ["chest", "shoulders", "triceps"],
+      "steps": [
+        "Start in a plank position with your hands slightly wider than shoulder-width apart",
+        "Lower your body until your chest nearly touches the floor",
+        "Push yourself back up to the starting position",
+        "Repeat for the desired number of repetitions"
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "pull-up",
+      "title": "Pull-Up",
+      "level": "Intermediate",
+      "imageUrl": "https://images.unsplash.com/photo-1598971639058-fab3c3109a00?q=80&w=1974&auto=format&fit=crop",
+      "description": "The pull-up is a challenging upper body exercise that primarily targets the back and biceps.",
+      "muscleGroups": ["back", "biceps", "forearms"],
+      "steps": [
+        "Hang from a pull-up bar with your hands slightly wider than shoulder-width apart",
+        "Pull yourself up until your chin is above the bar",
+        "Lower yourself back down with control",
+        "Repeat for the desired number of repetitions"
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "squat",
+      "title": "Bodyweight Squat",
+      "level": "Beginner",
+      "imageUrl": "https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?q=80&w=1769&auto=format&fit=crop",
+      "description": "The bodyweight squat is a fundamental lower body exercise that targets the quadriceps, hamstrings, and glutes.",
+      "muscleGroups": ["quadriceps", "hamstrings", "glutes"],
+      "steps": [
+        "Stand with your feet shoulder-width apart",
+        "Lower your body by bending your knees and pushing your hips back",
+        "Keep your chest up and back straight",
+        "Lower until your thighs are parallel to the ground",
+        "Push through your heels to return to the starting position"
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "dips",
+      "title": "Parallel Bar Dips",
+      "level": "Intermediate",
+      "imageUrl": "https://images.unsplash.com/photo-1599058917212-d750089bc07e?q=80&w=1769&auto=format&fit=crop",
+      "description": "Dips are an effective upper body exercise that targets the chest, triceps, and shoulders.",
+      "muscleGroups": ["chest", "triceps", "shoulders"],
+      "steps": [
+        "Grip parallel bars with your palms facing inward",
+        "Straighten your arms to support your body weight",
+        "Lower your body by bending your elbows until they reach a 90-degree angle",
+        "Push yourself back up to the starting position",
+        "Repeat for the desired number of repetitions"
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "plank",
+      "title": "Plank",
+      "level": "Beginner",
+      "imageUrl": "https://images.unsplash.com/photo-1566241142559-40e1dab266c6?q=80&w=1770&auto=format&fit=crop",
+      "description": "The plank is a core strengthening exercise that also engages the shoulders, arms, and glutes.",
+      "muscleGroups": ["core", "shoulders"],
+      "steps": [
+        "Start in a push-up position, then bend your elbows and rest your weight on your forearms",
+        "Keep your body in a straight line from head to heels",
+        "Engage your core and hold the position",
+        "Hold for the desired amount of time"
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "muscle-up",
+      "title": "Muscle-Up",
+      "level": "Advanced",
+      "imageUrl": "https://images.unsplash.com/photo-1599058917765-a780eda07a3e?q=80&w=1769&auto=format&fit=crop",
+      "description": "The muscle-up is an advanced calisthenics exercise that combines a pull-up with a dip in one fluid motion.",
+      "muscleGroups": ["back", "chest", "triceps", "shoulders"],
+      "steps": [
+        "Hang from a pull-up bar with a false grip (wrists over the bar)",
+        "Perform an explosive pull-up to bring your chest to the bar",
+        "As you reach the top of the pull-up, lean forward and push your body up and over the bar",
+        "Straighten your arms to finish in a dip position above the bar",
+        "Lower yourself back down with control"
+      ],
+      "difficulty": "advanced"
+    },
+    {
+      "id": "handstand",
+      "title": "Handstand",
+      "level": "Advanced",
+      "imageUrl": "https://images.unsplash.com/photo-1576094168768-4078c686a1c5?q=80&w=2536&auto=format&fit=crop",
+      "description": "The handstand is an advanced bodyweight skill that builds shoulder strength, balance, and body awareness.",
+      "muscleGroups": ["shoulders", "core", "arms"],
+      "steps": [
+        "Start in a downward dog position",
+        "Kick one leg up, followed by the other",
+        "Maintain a straight body line with engaged core",
+        "Hold the position, focusing on balance",
+        "Practice against a wall for support if needed"
+      ],
+      "difficulty": "advanced"
+    },
+    {
+      "id": "l-sit",
+      "title": "L-Sit",
+      "level": "Intermediate",
+      "imageUrl": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070&auto=format&fit=crop",
+      "description": "The L-sit is a challenging static hold that primarily targets the core and hip flexors.",
+      "muscleGroups": ["core", "hip-flexors", "quadriceps"],
+      "steps": [
+        "Sit on the ground with your legs extended in front of you",
+        "Place your hands on the ground beside your hips",
+        "Press down through your hands to lift your body off the ground",
+        "Keep your legs straight and parallel to the ground",
+        "Hold the position for the desired amount of time"
+      ],
+      "difficulty": "intermediate"
+    }
+  ]
