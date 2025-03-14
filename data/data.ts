@@ -1,4 +1,5 @@
 import exercisesData from './exercises.json';
+import workoutsData from './workouts.json';
 
 export interface Exercise {
   id: string;
@@ -16,6 +17,20 @@ interface Category {
   label: string;
 }
 
+interface WorkoutLevel {
+  level: number;
+  exercises: {
+    exerciseId: string;
+    reps: string;
+  }[];
+}
+
+export interface Workout {
+  id: string;
+  title: string;
+  levels: WorkoutLevel[];
+}
+
 // Categories
 export const categories: Category[] = [
   { id: 'all', label: 'All' },
@@ -30,6 +45,9 @@ export const categories: Category[] = [
 
 // Import exercises from JSON file
 export const exercises: Exercise[] = exercisesData as Exercise[];
+
+// Import workouts from JSON file
+export const workouts: Workout[] = workoutsData as Workout[];
 
 // Helper function to filter exercises by search term
 export const searchExercises = (searchTerm: string): Exercise[] => {

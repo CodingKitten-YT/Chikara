@@ -3,8 +3,9 @@ import { View, Text, StyleSheet, ScrollView, FlatList, SafeAreaView } from 'reac
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import ExerciseCard from '../../components/ExerciseCard';
+import WorkoutCard from '../../components/WorkoutCard';
 import SectionHeader from '../../components/SectionHeader';
-import { exercises} from '../../data/data';
+import { exercises, workouts } from '../../data/data';
 
 export default function HomeScreen() {
   return (
@@ -47,22 +48,22 @@ export default function HomeScreen() {
             contentContainerStyle={styles.horizontalList}
           />
 
-          {/* Popular Exercises */}
+          {/* Popular Workouts */}
           <SectionHeader 
             title="Workouts" 
             onSeeAll={() => router.push('/search')} 
           />
           
-          {exercises.slice(3, 6).map((exercise, index) => (
-            <View key={exercise.id} style={[
+          {workouts.slice(0, 3).map((workout, index) => (
+            <View key={workout.id} style={[
               styles.verticalCardWrapper,
               index === 0 && { marginTop: 8 }
             ]}>
-              <ExerciseCard
-                title={exercise.title}
-                level={exercise.level}
-                imageUrl={exercise.imageUrl}
-                onPress={() => router.push(`/workouts/${exercise.id}`)}
+              <WorkoutCard
+                title={workout.title}
+                level={workout.levels.length}
+                imageUrl={workout.imageUrl}
+                onPress={() => router.push(`/workouts/${workout.id}`)}
               />
             </View>
           ))}

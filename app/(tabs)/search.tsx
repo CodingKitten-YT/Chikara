@@ -5,7 +5,8 @@ import { useRouter } from 'expo-router'; // Import useRouter for navigation
 import SearchBar from '../../components/SearchBar';
 import CategoryPill from '../../components/CategoryPill';
 import ExerciseCard from '../../components/ExerciseCard';
-import { searchExercises, filterExercisesByCategory, categories, Exercise } from '../../data/data';
+import WorkoutCard from '../../components/WorkoutCard';
+import { searchExercises, filterExercisesByCategory, categories, Exercise, searchWorkouts, filterWorkoutsByCategory, Workout } from '../../data/data';
 
 export default function SearchScreen() {
   const router = useRouter(); // Initialize the router
@@ -20,6 +21,14 @@ export default function SearchScreen() {
     );
   }, [searchQuery, selectedCategory]);
 
+  // Filter workouts based on search query and selected category
+  const filteredWorkouts = React.useMemo(() => {
+    const searchResults = searchWorkouts(searchQuery);
+    return filterWorkoutsByCategory(selectedCategory).filter(workout =>
+      searchResults.some(searchResult => searchResult.id === workout.id)
+    );
+  }, [searchQuery, selectedCategory]);
+
   // Clear the search query
   const handleClearSearch = useCallback(() => {
     setSearchQuery('');
@@ -30,6 +39,16 @@ export default function SearchScreen() {
     <ExerciseCard
       title={item.title}
       level={item.level}
+      imageUrl={item.imageUrl}
+      onPress={() => router.push(`/workouts/${item.id}`)} // Navigate to detail page
+    />
+  ), [router]); // Add router as a dependency
+
+  // Render each workout item with navigation
+  const renderWorkoutItem = useCallback(({ item }: { item: Workout }) => (
+    <WorkoutCard
+      title={item.title}
+      level={item.levels.length}
       imageUrl={item.imageUrl}
       onPress={() => router.push(`/workouts/${item.id}`)} // Navigate to detail page
     />
@@ -80,6 +99,22 @@ export default function SearchScreen() {
         ) : (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>No exercises found</Text>
+            <Text style={styles.emptySubtext}>Try a different search term or category</Text>
+          </View>
+        )}
+
+        {/* Workout List */}
+        {filteredWorkouts.length > 0 ? (
+          <FlatList
+            data={filteredWorkouts}
+            renderItem={renderWorkoutItem}
+            keyExtractor={item => item.id}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.exercisesList}
+          />
+        ) : (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No workouts found</Text>
             <Text style={styles.emptySubtext}>Try a different search term or category</Text>
           </View>
         )}

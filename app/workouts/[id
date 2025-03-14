@@ -1,0 +1,93 @@
+import React from 'react';
+import { View, Text, StyleSheet, ScrollView, Image, SafeAreaView } from 'react-native';
+import { useRouter, useSearchParams } from 'expo-router';
+import { exercises, workouts } from '../../data/data';
+
+export default function WorkoutDetailPage() {
+  const router = useRouter();
+  const { id } = useSearchParams();
+  const workout = workouts.find(workout => workout.id === id);
+
+  if (!workout) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.errorText}>Workout not found</Text>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Image source={{ uri: workout.imageUrl }} style={styles.image} />
+        <View style={styles.content}>
+          <Text style={styles.title}>{workout.title}</Text>
+          {workout.levels.map(level => (
+            <View key={level.level} style={styles.levelContainer}>
+              <Text style={styles.levelTitle}>Level {level.level}</Text>
+              {level.exercises.map(exercise => {
+                const exerciseData = exercises.find(e => e.id === exercise.exerciseId);
+                return (
+                  <View key={exercise.exerciseId} style={styles.exerciseContainer}>
+                    <Text style={styles.exerciseTitle}>{exerciseData?.title}</Text>
+                    <Text style={styles.exerciseReps}>{exercise.reps}</Text>
+                  </View>
+                );
+              })}
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F8FAFC',
+  },
+  scrollContent: {
+    paddingBottom: 40,
+  },
+  image: {
+    width: '100%',
+    height: 200,
+  },
+  content: {
+    padding: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#1E293B',
+    marginBottom: 16,
+  },
+  levelContainer: {
+    marginBottom: 24,
+  },
+  levelTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#2D3748',
+    marginBottom: 8,
+  },
+  exerciseContainer: {
+    marginBottom: 12,
+  },
+  exerciseTitle: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#4A5568',
+  },
+  exerciseReps: {
+    fontSize: 16,
+    color: '#718096',
+  },
+  errorText: {
+    fontSize: 18,
+    color: '#E53E3E',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+});
