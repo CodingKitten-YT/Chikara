@@ -1,26 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
-import { Clock, Dumbbell, ChevronRight, ChevronLeft } from 'lucide-react-native';
-import { exercises } from '../../data/data';
+import { Clock, ChevronLeft, Dumbbell } from 'lucide-react-native';
+import { workouts } from '../../data/data';
 import { StatusBar } from 'expo-status-bar';
 
-export default function ExerciseDetailScreen() {
+export default function WorkoutDetailScreen() {
   const { id } = useLocalSearchParams();
-  const exercise = exercises.find(ex => ex.id === id);
+  const workout = workouts.find(w => w.id === id);
+  const [selectedLevel, setSelectedLevel] = useState(0);
 
-  if (!exercise) {
+  if (!workout) {
     return (
       <View style={styles.container}>
-        <Text>Exercise not found</Text>
+        <Text>Workout not found</Text>
       </View>
     );
   }
 
+  const currentLevel = workout.levels[selectedLevel];
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <StatusBar style="light" />
-      <Image source={{ uri: exercise.imageUrl }} style={styles.coverImage} />
+      <Image source={{ uri: workout.imageUrl }} style={styles.coverImage} />
       <View style={styles.overlay} />
 
       <TouchableOpacity 
@@ -32,54 +35,91 @@ export default function ExerciseDetailScreen() {
       
       <View style={styles.content}>
         <View style={styles.header}>
-          <Text style={styles.title}>{exercise.title}</Text>
-          <View style={styles.levelBadge}>
-            <Text style={styles.levelText}>{exercise.level}</Text>
+          <Text style={styles.title}>{workout.title}</Text>
+          <View style={styles.muscleGroupBadge}>
+            <Text style={styles.muscleGroupText}>{workout.muscleGroup}</Text>
           </View>
         </View>
 
-        <Text style={styles.description}>{exercise.description}</Text>
+        <Text style={styles.description}>{workout.description}</Text>
+
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          style={styles.levelSelector}
+        >
+          {workout.levels.map((level, index) => (
+            <TouchableOpacity
+              key={level.id}
+              style={[
+                styles.levelButton,
+                selectedLevel === index && styles.levelButtonActive
+              ]}
+              onPress={() => setSelectedLevel(index)}
+            >
+              <Text style={[
+                styles.levelButtonText,
+                selectedLevel === index && styles.levelButtonTextActive
+              ]}>
+                {level.level}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
 
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
-            <Clock size={24} color="#3182CE" />
+            <Clock size={24} color="#769267" />
             <Text style={styles.statLabel}>Duration</Text>
-            <Text style={styles.statValue}>15-20 min</Text>
+            <Text style={styles.statValue}>{currentLevel.duration}</Text>
           </View>
           <View style={styles.statItem}>
-            <Dumbbell size={24} color="#3182CE" />
+            <Dumbbell size={24} color="#769267" />
             <Text style={styles.statLabel}>Difficulty</Text>
-            <Text style={styles.statValue}>{exercise.difficulty}</Text>
+            <Text style={styles.statValue}>{currentLevel.difficulty}</Text>
           </View>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Target Muscle Groups</Text>
-          <View style={styles.muscleGroupsContainer}>
-            {exercise.muscleGroups.map((group, index) => (
-              <View key={index} style={styles.muscleGroupBadge}>
-                <Text style={styles.muscleGroupText}>{group}</Text>
+          <Text style={styles.sectionTitle}>Warm-up</Text>
+          {currentLevel.warmup.map((item, index) => (
+            <View key={index} style={styles.listItem}>
+              <Text style={styles.listNumber}>{index + 1}</Text>
+              <Text style={styles.listText}>{item}</Text>
+            </View>
+          ))}
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Exercises</Text>
+          {currentLevel.exercises.map((exercise, index) => (
+            <View key={index} style={styles.exerciseItem}>
+              <Text style={styles.exerciseName}>{exercise.name}</Text>
+              <View style={styles.exerciseDetails}>
+                <Text style={styles.exerciseDetail}>Sets: {exercise.sets}</Text>
+                {exercise.reps && <Text style={styles.exerciseDetail}>Reps: {exercise.reps}</Text>}
+                {exercise.duration && <Text style={styles.exerciseDetail}>Hold: {exercise.duration}</Text>}
+                <Text style={styles.exerciseDetail}>Rest: {exercise.rest}</Text>
               </View>
-            ))}
-          </View>
+            </View>
+          ))}
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Steps</Text>
-          {exercise.steps.map((step, index) => (
-            <View key={index} style={styles.stepItem}>
-              <Text style={styles.stepNumber}>{index + 1}</Text>
-              <Text style={styles.stepText}>{step}</Text>
+          <Text style={styles.sectionTitle}>Cool-down Stretching</Text>
+          {currentLevel.stretching.map((item, index) => (
+            <View key={index} style={styles.listItem}>
+              <Text style={styles.listNumber}>{index + 1}</Text>
+              <Text style={styles.listText}>{item}</Text>
             </View>
           ))}
         </View>
 
         <TouchableOpacity 
           style={styles.startButton}
-          onPress={() => router.push(`/`)}
+          onPress={() => {/* TODO: Implement workout start */}}
         >
           <Text style={styles.startButtonText}>Start Workout</Text>
-          <ChevronRight size={20} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -120,16 +160,17 @@ const styles = StyleSheet.create({
     color: '#2D3748',
     flex: 1,
   },
-  levelBadge: {
-    backgroundColor: '#EBF8FF',
+  muscleGroupBadge: {
+    backgroundColor: '#769267',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
   },
-  levelText: {
+  muscleGroupText: {
     fontSize: 14,
     fontFamily: 'Inter-Medium',
-    color: '#3182CE',
+    color: '#FFFFFF',
+    textTransform: 'capitalize',
   },
   description: {
     fontSize: 16,
@@ -137,6 +178,31 @@ const styles = StyleSheet.create({
     color: '#4A5568',
     lineHeight: 24,
     marginBottom: 24,
+  },
+  levelSelector: {
+    flexDirection: 'row',
+    marginBottom: 24,
+  },
+  levelButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#F7FAFC',
+    marginRight: 8,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  levelButtonActive: {
+    backgroundColor: '#769267',
+    borderColor: '#769267',
+  },
+  levelButtonText: {
+    fontSize: 14,
+    fontFamily: 'Inter-Medium',
+    color: '#4A5568',
+  },
+  levelButtonTextActive: {
+    color: '#FFFFFF',
   },
   statsContainer: {
     flexDirection: 'row',
@@ -175,28 +241,10 @@ const styles = StyleSheet.create({
     color: '#2D3748',
     marginBottom: 16,
   },
-  muscleGroupsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  muscleGroupBadge: {
-    backgroundColor: '#F7FAFC',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  muscleGroupText: {
-    fontSize: 14,
-    fontFamily: 'Inter-Medium',
-    color: '#4A5568',
-  },
-  stepItem: {
+  listItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 16,
+    marginBottom: 12,
     backgroundColor: '#FFFFFF',
     padding: 16,
     borderRadius: 12,
@@ -206,11 +254,11 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
   },
-  stepNumber: {
+  listNumber: {
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: '#3182CE',
+    backgroundColor: '#769267',
     color: '#FFFFFF',
     textAlign: 'center',
     lineHeight: 24,
@@ -218,20 +266,49 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Medium',
     marginRight: 12,
   },
-  stepText: {
+  listText: {
     flex: 1,
     fontSize: 16,
     fontFamily: 'Inter-Regular',
     color: '#4A5568',
     lineHeight: 24,
   },
-  startButton: {
-    backgroundColor: '#3182CE',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+  exerciseItem: {
+    backgroundColor: '#FFFFFF',
     padding: 16,
     borderRadius: 12,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  exerciseName: {
+    fontSize: 16,
+    fontFamily: 'Poppins-SemiBold',
+    color: '#2D3748',
+    marginBottom: 8,
+  },
+  exerciseDetails: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  exerciseDetail: {
+    fontSize: 14,
+    fontFamily: 'Inter-Regular',
+    color: '#4A5568',
+    backgroundColor: '#F7FAFC',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  startButton: {
+    backgroundColor: '#769267',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
     marginTop: 8,
     marginBottom: 32,
   },
@@ -239,7 +316,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontFamily: 'Poppins-SemiBold',
-    marginRight: 8,
   },
   backButton: {
     position: 'absolute',

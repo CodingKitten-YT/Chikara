@@ -1,4 +1,5 @@
 import exercisesData from './exercises.json';
+import workoutsData from './workouts.json';
 
 export interface Exercise {
   id: string;
@@ -11,25 +12,53 @@ export interface Exercise {
   difficulty: 'beginner' | 'intermediate' | 'advanced' | 'expert';
 }
 
+export interface WorkoutExercise {
+  name: string;
+  sets: number;
+  reps?: string;
+  duration?: string;
+  rest: string;
+}
+
+export interface WorkoutLevel {
+  id: string;
+  level: string;
+  exercises: WorkoutExercise[];
+  warmup: string[];
+  stretching: string[];
+  duration: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+}
+
+export interface Workout {
+  id: string;
+  title: string;
+  muscleGroup: string;
+  imageUrl: string;
+  description: string;
+  levels: WorkoutLevel[];
+}
+
 interface Category {
   id: string;
   label: string;
 }
 
-// Categories
-export const categories: Category[] = [
+// Muscle group categories
+export const muscleGroups = [
   { id: 'all', label: 'All' },
-  { id: 'beginner', label: 'Beginner' },
-  { id: 'intermediate', label: 'Intermediate' },
-  { id: 'advanced', label: 'Advanced' },
-  { id: 'upper-body', label: 'Upper Body' },
-  { id: 'lower-body', label: 'Lower Body' },
   { id: 'core', label: 'Core' },
+  { id: 'chest', label: 'Chest' },
+  { id: 'back', label: 'Back' },
+  { id: 'arms', label: 'Arms' },
+  { id: 'shoulders', label: 'Shoulders' },
+  { id: 'legs', label: 'Legs' },
   { id: 'full-body', label: 'Full Body' },
 ];
 
-// Import exercises from JSON file
+// Import exercises and workouts from JSON files
 export const exercises: Exercise[] = exercisesData as Exercise[];
+export const workouts: Workout[] = workoutsData.workouts as Workout[];
 
 // Helper function to filter exercises by search term
 export const searchExercises = (searchTerm: string): Exercise[] => {
@@ -45,42 +74,21 @@ export const searchExercises = (searchTerm: string): Exercise[] => {
   );
 };
 
-// Helper function to filter exercises by category
-export const filterExercisesByCategory = (categoryId: string): Exercise[] => {
-  if (categoryId === 'all') return exercises;
+// Helper function to search workouts
+export const searchWorkouts = (searchTerm: string): Workout[] => {
+  if (!searchTerm) return workouts;
   
-  if (categoryId === 'beginner' || categoryId === 'intermediate' || categoryId === 'advanced') {
-    return exercises.filter(exercise => exercise.difficulty === categoryId);
-  }
+  const lowerCaseSearchTerm = searchTerm.toLowerCase();
   
-  if (categoryId === 'upper-body') {
-    return exercises.filter(exercise => 
-      exercise.muscleGroups.some(group => 
-        ['chest', 'back', 'shoulders', 'triceps', 'biceps', 'forearms'].includes(group)
-      )
-    );
-  }
-  
-  if (categoryId === 'lower-body') {
-    return exercises.filter(exercise => 
-      exercise.muscleGroups.some(group => 
-        ['quadriceps', 'hamstrings', 'glutes', 'calves'].includes(group)
-      )
-    );
-  }
-  
-  if (categoryId === 'core') {
-    return exercises.filter(exercise => 
-      exercise.muscleGroups.includes('core')
-    );
-  }
-  
-  if (categoryId === 'full-body') {
-    return exercises.filter(exercise => 
-      exercise.muscleGroups.some(group => ['chest', 'back', 'shoulders'].includes(group)) &&
-      exercise.muscleGroups.some(group => ['quadriceps', 'hamstrings', 'glutes'].includes(group))
-    );
-  }
-  
-  return exercises;
+  return workouts.filter(workout => 
+    workout.title.toLowerCase().includes(lowerCaseSearchTerm) ||
+    workout.description.toLowerCase().includes(lowerCaseSearchTerm) ||
+    workout.muscleGroup.toLowerCase().includes(lowerCaseSearchTerm)
+  );
+};
+
+// Helper function to filter workouts by muscle group
+export const filterWorkoutsByMuscleGroup = (muscleGroup: string): Workout[] => {
+  if (muscleGroup === 'all') return workouts;
+  return workouts.filter(workout => workout.muscleGroup === muscleGroup);
 };

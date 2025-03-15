@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import ExerciseCard from '../../components/ExerciseCard';
 import SectionHeader from '../../components/SectionHeader';
-import { exercises} from '../../data/data';
+import { exercises, workouts, muscleGroups } from '../../data/data';
 
 export default function HomeScreen() {
   return (
@@ -22,47 +22,41 @@ export default function HomeScreen() {
 
         {/* Content Container */}
         <View style={styles.content}>
-          {/* Recommended Exercises */}
+          {/* Muscle Groups */}
           <SectionHeader 
-            title="Recommended For You" 
+            title="Muscle Groups" 
             onSeeAll={() => router.push('/search')} 
           />
           
           <FlatList
-            data={exercises.slice(0, 3)}
+            data={muscleGroups.filter(group => group.id !== 'all')}
             horizontal
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (
-              <View style={styles.cardWrapper}>
-                <ExerciseCard
-                  title={item.title}
-                  level={item.level}
-                  imageUrl={item.imageUrl}
-                  onPress={() => router.push(`/workouts/${item.id}`)}
-                  compact={true}
-                />
+              <View style={styles.muscleGroupCard}>
+                <Text style={styles.muscleGroupTitle}>{item.label}</Text>
               </View>
             )}
             keyExtractor={item => item.id}
             contentContainerStyle={styles.horizontalList}
           />
 
-          {/* Popular Exercises */}
+          {/* Featured Workouts */}
           <SectionHeader 
-            title="Workouts" 
+            title="Featured Workouts" 
             onSeeAll={() => router.push('/search')} 
           />
           
-          {exercises.slice(3, 6).map((exercise, index) => (
-            <View key={exercise.id} style={[
+          {workouts.slice(0, 3).map((workout, index) => (
+            <View key={workout.id} style={[
               styles.verticalCardWrapper,
               index === 0 && { marginTop: 8 }
             ]}>
               <ExerciseCard
-                title={exercise.title}
-                level={exercise.level}
-                imageUrl={exercise.imageUrl}
-                onPress={() => router.push(`/workouts/${exercise.id}`)}
+                title={workout.title}
+                level={workout.muscleGroup}
+                imageUrl={workout.imageUrl}
+                onPress={() => router.push(`/workouts/${workout.id}`)}
               />
             </View>
           ))}
@@ -112,9 +106,21 @@ const styles = StyleSheet.create({
   horizontalList: {
     paddingRight: 24,
   },
-  cardWrapper: {
-    marginRight: 6,
+  muscleGroupCard: {
+    backgroundColor: '#769267',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderRadius: 12,
+    marginRight: 12,
     marginVertical: 8,
+    minWidth: 120,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  muscleGroupTitle: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontFamily: 'Poppins-SemiBold',
   },
   verticalCardWrapper: {
     marginBottom: 6,

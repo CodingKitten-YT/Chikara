@@ -1,0 +1,167 @@
+{
+  "workouts": [
+    {
+      "id": "core-workout",
+      "title": "Core Strength",
+      "muscleGroup": "core",
+      "imageUrl": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070&auto=format&fit=crop",
+      "description": "Build a strong and stable core with progressive exercises targeting your abs, obliques, and lower back.",
+      "levels": [
+        {
+          "id": "core-beginner",
+          "level": "Beginner",
+          "duration": "30-45 min",
+          "difficulty": "beginner",
+          "warmup": [
+            "Light jogging (2 min)",
+            "Cat-cow stretches (1 min)",
+            "Bird dog holds (1 min)",
+            "Dead bug prep (1 min)"
+          ],
+          "exercises": [
+            {
+              "name": "Plank",
+              "sets": 3,
+              "duration": "20-30 sec",
+              "rest": "60 sec"
+            },
+            {
+              "name": "Dead Bug",
+              "sets": 3,
+              "reps": "10 each side",
+              "rest": "60 sec"
+            },
+            {
+              "name": "Bird Dog",
+              "sets": 3,
+              "duration": "30 sec",
+              "rest": "60 sec"
+            }
+          ],
+          "stretching": [
+            "Cat-cow stretch (30 sec)",
+            "Child's pose (30 sec)",
+            "Cobra stretch (30 sec)"
+          ]
+        },
+        {
+          "id": "core-intermediate",
+          "level": "Intermediate",
+          "duration": "45-60 min",
+          "difficulty": "intermediate",
+          "warmup": [
+            "Dynamic stretching (5 min)",
+            "Plank holds (2 min)",
+            "Mountain climbers (1 min)"
+          ],
+          "exercises": [
+            {
+              "name": "L-Sit Progression",
+              "sets": 4,
+              "duration": "10-15 sec",
+              "rest": "90 sec"
+            },
+            {
+              "name": "Hollow Body Hold",
+              "sets": 4,
+              "duration": "20-30 sec",
+              "rest": "90 sec"
+            },
+            {
+              "name": "Dragon Flag Negatives",
+              "sets": 3,
+              "reps": "5-8",
+              "rest": "120 sec"
+            }
+          ],
+          "stretching": [
+            "Bridge holds (3 x 30 sec)",
+            "Pike stretch (1 min)",
+            "Lying twist stretch (30 sec each side)"
+          ]
+        },
+        {
+          "id": "core-advanced",
+          "level": "Advanced",
+          "duration": "60-75 min",
+          "difficulty": "advanced",
+          "warmup": [
+            "Comprehensive mobility routine (10 min)",
+            "Handstand prep (5 min)",
+            "L-sit prep (5 min)"
+          ],
+          "exercises": [
+            {
+              "name": "Full L-Sit",
+              "sets": 4,
+              "duration": "15-20 sec",
+              "rest": "120 sec"
+            },
+            {
+              "name": "Dragon Flag",
+              "sets": 4,
+              "reps": "5-8",
+              "rest": "120 sec"
+            },
+            {
+              "name": "Front Lever Progression",
+              "sets": 4,
+              "duration": "10-15 sec",
+              "rest": "120 sec"
+            }
+          ],
+          "stretching": [
+            "Advanced flexibility work (10 min)",
+            "Mobility drills (5 min)",
+            "Recovery routine (5 min)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chest-workout",
+      "title": "Push Power",
+      "muscleGroup": "chest",
+      "imageUrl": "https://images.unsplash.com/photo-1599058917765-a780eda07a3e?q=80&w=1769&auto=format&fit=crop",
+      "description": "Develop chest strength and definition through progressive push exercises.",
+      "levels": [
+        {
+          "id": "chest-beginner",
+          "level": "Beginner",
+          "duration": "30-45 min",
+          "difficulty": "beginner",
+          "warmup": [
+            "Arm circles (1 min)",
+            "Wall push-ups (2 min)",
+            "Scapular shrugs (1 min)"
+          ],
+          "exercises": [
+            {
+              "name": "Incline Push-Ups",
+              "sets": 3,
+              "reps": "8-12",
+              "rest": "90 sec"
+            },
+            {
+              "name": "Regular Push-Ups",
+              "sets": 3,
+              "reps": "5-8",
+              "rest": "90 sec"
+            },
+            {
+              "name": "Diamond Push-Ups",
+              "sets": 2,
+              "reps": "5-8",
+              "rest": "90 sec"
+            }
+          ],
+          "stretching": [
+            "Chest stretch against wall (30 sec each side)",
+            "Shoulder stretch (30 sec each side)",
+            "Upper back stretch (30 sec)"
+          ]
+        }
+      ]
+    }
+  ]
+}

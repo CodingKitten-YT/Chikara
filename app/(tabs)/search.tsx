@@ -1,46 +1,61 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, SafeAreaView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { useRouter } from 'expo-router'; // Import useRouter for navigation
+import { useRouter } from 'expo-router';
 import SearchBar from '../../components/SearchBar';
 import CategoryPill from '../../components/CategoryPill';
 import ExerciseCard from '../../components/ExerciseCard';
-import { searchExercises, filterExercisesByCategory, categories, Exercise } from '../../data/data';
+import { searchExercises, searchWorkouts, filterExercisesByCategory, categories, Exercise, Workout } from '../../data/data';
+
+type SearchResult = {
+  id: string;
+  title: string;
+  level: string;
+  imageUrl: string;
+  type: 'exercise' | 'workout';
+};
 
 export default function SearchScreen() {
-  const router = useRouter(); // Initialize the router
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
-  // Filter exercises based on search query and selected category
-  const filteredExercises = React.useMemo(() => {
-    const searchResults = searchExercises(searchQuery);
-    return filterExercisesByCategory(selectedCategory).filter(exercise =>
-      searchResults.some(searchResult => searchResult.id === exercise.id)
-    );
-  }, [searchQuery, selectedCategory]);
+  // Combine and format search results
+  const searchResults = React.useMemo(() => {
+    const exercises = searchExercises(searchQuery).map(exercise => ({
+      ...exercise,
+      type: 'exercise' as const
+    }));
+    
+    const workouts = searchWorkouts(searchQuery).map(workout => ({
+      ...workout,
+      type: 'workout' as const
+    }));
+
+    return [...workouts, ...exercises];
+  }, [searchQuery]);
 
   // Clear the search query
   const handleClearSearch = useCallback(() => {
     setSearchQuery('');
   }, []);
 
-  // Render each exercise item with navigation
-  const renderExerciseItem = useCallback(({ item }: { item: Exercise }) => (
+  // Render each item
+  const renderSearchItem = useCallback(({ item }: { item: SearchResult }) => (
     <ExerciseCard
       title={item.title}
       level={item.level}
       imageUrl={item.imageUrl}
-      onPress={() => router.push(`/workouts/${item.id}`)} // Navigate to detail page
+      onPress={() => router.push(`/${item.type}s/${item.id}`)}
     />
-  ), [router]); // Add router as a dependency
+  ), [router]);
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
       <View style={styles.header}>
         <Text style={styles.title}>Search</Text>
-        <Text style={styles.subtitle}>Find exercises, skills, and workouts</Text>
+        <Text style={styles.subtitle}>Find exercises and workouts</Text>
       </View>
 
       <View style={styles.content}>
@@ -68,18 +83,18 @@ export default function SearchScreen() {
           />
         </View>
 
-        {/* Exercise List */}
-        {filteredExercises.length > 0 ? (
+        {/* Search Results */}
+        {searchResults.length > 0 ? (
           <FlatList
-            data={filteredExercises}
-            renderItem={renderExerciseItem}
-            keyExtractor={item => item.id}
+            data={searchResults}
+            renderItem={renderSearchItem}
+            keyExtractor={item => `${item.type}-${item.id}`}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.exercisesList}
+            contentContainerStyle={styles.resultsList}
           />
         ) : (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No exercises found</Text>
+            <Text style={styles.emptyText}>No results found</Text>
             <Text style={styles.emptySubtext}>Try a different search term or category</Text>
           </View>
         )}
@@ -88,7 +103,6 @@ export default function SearchScreen() {
   );
 }
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -118,7 +132,7 @@ const styles = StyleSheet.create({
   categoriesContainer: {
     marginBottom: 16,
   },
-  exercisesList: {
+  resultsList: {
     paddingBottom: 20,
   },
   emptyContainer: {
