@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   selectedContainer: {
-    backgroundColor: '#3182CE',
+    backgroundColor: '#769267',
   },
   label: {
     fontSize: 14,
