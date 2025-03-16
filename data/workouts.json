@@ -20,21 +20,15 @@
           ],
           "exercises": [
             {
-              "name": "Plank",
+              "exerciseId": "plank",
               "sets": 3,
               "duration": "20-30 sec",
               "rest": "60 sec"
             },
             {
-              "name": "Dead Bug",
+              "exerciseId": "l-sit",
               "sets": 3,
               "reps": "10 each side",
-              "rest": "60 sec"
-            },
-            {
-              "name": "Bird Dog",
-              "sets": 3,
-              "duration": "30 sec",
               "rest": "60 sec"
             }
           ],
@@ -56,22 +50,16 @@
           ],
           "exercises": [
             {
-              "name": "L-Sit Progression",
+              "exerciseId": "l-sit",
               "sets": 4,
               "duration": "10-15 sec",
               "rest": "90 sec"
             },
             {
-              "name": "Hollow Body Hold",
+              "exerciseId": "plank",
               "sets": 4,
               "duration": "20-30 sec",
               "rest": "90 sec"
-            },
-            {
-              "name": "Dragon Flag Negatives",
-              "sets": 3,
-              "reps": "5-8",
-              "rest": "120 sec"
             }
           ],
           "stretching": [
@@ -92,19 +80,13 @@
           ],
           "exercises": [
             {
-              "name": "Full L-Sit",
+              "exerciseId": "l-sit",
               "sets": 4,
               "duration": "15-20 sec",
               "rest": "120 sec"
             },
             {
-              "name": "Dragon Flag",
-              "sets": 4,
-              "reps": "5-8",
-              "rest": "120 sec"
-            },
-            {
-              "name": "Front Lever Progression",
+              "exerciseId": "handstand",
               "sets": 4,
               "duration": "10-15 sec",
               "rest": "120 sec"
@@ -137,20 +119,14 @@
           ],
           "exercises": [
             {
-              "name": "Incline Push-Ups",
+              "exerciseId": "push-up",
               "sets": 3,
               "reps": "8-12",
               "rest": "90 sec"
             },
             {
-              "name": "Regular Push-Ups",
+              "exerciseId": "dips",
               "sets": 3,
-              "reps": "5-8",
-              "rest": "90 sec"
-            },
-            {
-              "name": "Diamond Push-Ups",
-              "sets": 2,
               "reps": "5-8",
               "rest": "90 sec"
             }

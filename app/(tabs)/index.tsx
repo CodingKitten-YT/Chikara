@@ -1,12 +1,20 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, FlatList, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, FlatList, SafeAreaView, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import ExerciseCard from '../../components/ExerciseCard';
 import SectionHeader from '../../components/SectionHeader';
-import { exercises, workouts, muscleGroups } from '../../data/data';
+import { exercises, workouts, muscleGroups, filterWorkoutsByMuscleGroup } from '../../data/data';
 
 export default function HomeScreen() {
+  const handleMuscleGroupPress = (muscleGroupId: string) => {
+    // Filter workouts and navigate to search with filtered results
+    router.push({
+      pathname: '/search',
+      params: { muscleGroup: muscleGroupId }
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
@@ -33,9 +41,13 @@ export default function HomeScreen() {
             horizontal
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (
-              <View style={styles.muscleGroupCard}>
+              <TouchableOpacity
+                style={styles.muscleGroupCard}
+                onPress={() => handleMuscleGroupPress(item.id)}
+                activeOpacity={0.7}
+              >
                 <Text style={styles.muscleGroupTitle}>{item.label}</Text>
-              </View>
+              </TouchableOpacity>
             )}
             keyExtractor={item => item.id}
             contentContainerStyle={styles.horizontalList}
@@ -77,9 +89,10 @@ export default function HomeScreen() {
             ]}>
               <ExerciseCard
                 title={workout.title}
-                level={`${workout.muscleGroup} workout`}
+                level={workout.levels[0].difficulty}
                 imageUrl={workout.imageUrl}
                 onPress={() => router.push(`/workouts/${workout.id}`)}
+                tag={workout.muscleGroup}
               />
             </View>
           ))}

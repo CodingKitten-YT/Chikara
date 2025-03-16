@@ -13,7 +13,7 @@ export interface Exercise {
 }
 
 export interface WorkoutExercise {
-  name: string;
+  exerciseId: string;
   sets: number;
   reps?: string;
   duration?: string;
@@ -56,9 +56,17 @@ export const muscleGroups = [
   { id: 'full-body', label: 'Full Body' },
 ];
 
+// Categories for search
+export const categories = muscleGroups;
+
 // Import exercises and workouts from JSON files
 export const exercises: Exercise[] = exercisesData as Exercise[];
 export const workouts: Workout[] = workoutsData.workouts as Workout[];
+
+// Helper function to get exercise by ID
+export const getExerciseById = (id: string): Exercise | undefined => {
+  return exercises.find(exercise => exercise.id === id);
+};
 
 // Helper function to filter exercises by search term
 export const searchExercises = (searchTerm: string): Exercise[] => {

@@ -8,6 +8,7 @@ interface ExerciseCardProps {
   imageUrl: string;
   onPress: () => void;
   compact?: boolean;
+  tag?: string;
 }
 
 const ExerciseCard = ({
@@ -15,8 +16,12 @@ const ExerciseCard = ({
   level,
   imageUrl,
   onPress,
-  compact = false
+  compact = false,
+  tag
 }: ExerciseCardProps): React.ReactElement => {
+  // Capitalize the first letter of the tag if it exists
+  const formattedTag = tag ? tag.charAt(0).toUpperCase() + tag.slice(1) : null;
+
   return (
     <TouchableOpacity
       style={[
@@ -38,8 +43,15 @@ const ExerciseCard = ({
       <View style={styles.content}>
         <View>
           <Text style={styles.title}>{title}</Text>
-          <View style={styles.levelContainer}>
-            <Text style={styles.levelText}>{level}</Text>
+          <View style={styles.tagsContainer}>
+            {formattedTag && (
+              <View style={styles.tagContainer}>
+                <Text style={styles.tagText}>{formattedTag}</Text>
+              </View>
+            )}
+            <View style={styles.levelContainer}>
+              <Text style={styles.levelText}>{level}</Text>
+            </View>
           </View>
         </View>
         {!compact && (
@@ -91,14 +103,28 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18,
     fontFamily: 'Poppins-SemiBold',
-    marginBottom: 4,
+    marginBottom: 8,
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  tagContainer: {
+    backgroundColor: 'rgba(118, 146, 103, 0.8)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  tagText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontFamily: 'Poppins-Medium',
   },
   levelContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
-    alignSelf: 'flex-start',
   },
   levelText: {
     color: '#FFFFFF',

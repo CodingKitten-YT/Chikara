@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Clock, ChevronLeft, Dumbbell } from 'lucide-react-native';
-import { workouts } from '../../data/data';
+import { workouts, getExerciseById } from '../../data/data';
 import { StatusBar } from 'expo-status-bar';
 
 export default function WorkoutDetailScreen() {
@@ -92,17 +92,30 @@ export default function WorkoutDetailScreen() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Exercises</Text>
-          {currentLevel.exercises.map((exercise, index) => (
-            <View key={index} style={styles.exerciseItem}>
-              <Text style={styles.exerciseName}>{exercise.name}</Text>
-              <View style={styles.exerciseDetails}>
-                <Text style={styles.exerciseDetail}>Sets: {exercise.sets}</Text>
-                {exercise.reps && <Text style={styles.exerciseDetail}>Reps: {exercise.reps}</Text>}
-                {exercise.duration && <Text style={styles.exerciseDetail}>Hold: {exercise.duration}</Text>}
-                <Text style={styles.exerciseDetail}>Rest: {exercise.rest}</Text>
-              </View>
-            </View>
-          ))}
+          {currentLevel.exercises.map((exercise, index) => {
+            const exerciseDetails = getExerciseById(exercise.exerciseId);
+            if (!exerciseDetails) return null;
+
+            return (
+              <TouchableOpacity
+                key={index}
+                style={styles.exerciseItem}
+                onPress={() => router.push(`/exercises/${exercise.exerciseId}`)}
+                activeOpacity={0.7}
+              >
+                <View style={styles.exerciseHeader}>
+                  <Text style={styles.exerciseName}>{exerciseDetails.title}</Text>
+                  <Text style={styles.exerciseLevel}>{exerciseDetails.level}</Text>
+                </View>
+                <View style={styles.exerciseDetails}>
+                  <Text style={styles.exerciseDetail}>Sets: {exercise.sets}</Text>
+                  {exercise.reps && <Text style={styles.exerciseDetail}>Reps: {exercise.reps}</Text>}
+                  {exercise.duration && <Text style={styles.exerciseDetail}>Hold: {exercise.duration}</Text>}
+                  <Text style={styles.exerciseDetail}>Rest: {exercise.rest}</Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
         <View style={styles.section}>
@@ -284,11 +297,25 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
   },
+  exerciseHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
   exerciseName: {
     fontSize: 16,
     fontFamily: 'Poppins-SemiBold',
     color: '#2D3748',
-    marginBottom: 8,
+  },
+  exerciseLevel: {
+    fontSize: 12,
+    fontFamily: 'Inter-Medium',
+    color: '#769267',
+    backgroundColor: '#F0FFF4',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
   },
   exerciseDetails: {
     flexDirection: 'row',

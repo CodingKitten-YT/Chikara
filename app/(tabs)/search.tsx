@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, SafeAreaView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import SearchBar from '../../components/SearchBar';
 import CategoryPill from '../../components/CategoryPill';
 import ExerciseCard from '../../components/ExerciseCard';
-import { searchExercises, searchWorkouts, filterExercisesByCategory, categories, Exercise, Workout } from '../../data/data';
+import { searchExercises, searchWorkouts, filterWorkoutsByMuscleGroup, categories, Exercise, Workout } from '../../data/data';
 
 type SearchResult = {
   id: string;
@@ -13,32 +13,53 @@ type SearchResult = {
   level: string;
   imageUrl: string;
   type: 'exercise' | 'workout';
+  muscleGroup?: string;
 };
 
 export default function SearchScreen() {
   const router = useRouter();
+  const { muscleGroup: initialMuscleGroup } = useLocalSearchParams<{ muscleGroup?: string }>();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState(initialMuscleGroup || 'all');
 
   // Combine and format search results
   const searchResults = React.useMemo(() => {
-    const exercises = searchExercises(searchQuery).map(exercise => ({
-      ...exercise,
-      type: 'exercise' as const
-    }));
+    let filteredWorkouts = initialMuscleGroup 
+      ? filterWorkoutsByMuscleGroup(initialMuscleGroup)
+      : searchWorkouts(searchQuery);
+
+    if (selectedCategory !== 'all' && !initialMuscleGroup) {
+      filteredWorkouts = filterWorkoutsByMuscleGroup(selectedCategory);
+    }
     
-    const workouts = searchWorkouts(searchQuery).map(workout => ({
+    const workouts = filteredWorkouts.map(workout => ({
       ...workout,
-      type: 'workout' as const
+      type: 'workout' as const,
+      level: workout.levels[0].difficulty,
+      muscleGroup: workout.muscleGroup
     }));
 
+    const exercises = !initialMuscleGroup ? searchExercises(searchQuery).map(exercise => ({
+      ...exercise,
+      type: 'exercise' as const
+    })) : [];
+
     return [...workouts, ...exercises];
-  }, [searchQuery]);
+  }, [searchQuery, selectedCategory, initialMuscleGroup]);
 
   // Clear the search query
   const handleClearSearch = useCallback(() => {
     setSearchQuery('');
   }, []);
+
+  // Handle category selection
+  const handleCategorySelect = useCallback((categoryId: string) => {
+    setSelectedCategory(categoryId);
+    if (initialMuscleGroup) {
+      // Clear the initial muscle group filter by replacing the current route
+      router.replace('/search');
+    }
+  }, [initialMuscleGroup, router]);
 
   // Render each item
   const renderSearchItem = useCallback(({ item }: { item: SearchResult }) => (
@@ -47,6 +68,7 @@ export default function SearchScreen() {
       level={item.level}
       imageUrl={item.imageUrl}
       onPress={() => router.push(`/${item.type}s/${item.id}`)}
+      tag={item.muscleGroup}
     />
   ), [router]);
 
@@ -76,7 +98,7 @@ export default function SearchScreen() {
               <CategoryPill
                 label={item.label}
                 isSelected={selectedCategory === item.id}
-                onPress={() => setSelectedCategory(item.id)}
+                onPress={() => handleCategorySelect(item.id)}
               />
             )}
             keyExtractor={item => item.id}
