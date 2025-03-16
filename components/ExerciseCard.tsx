@@ -10,29 +10,29 @@ interface ExerciseCardProps {
   compact?: boolean;
 }
 
-const ExerciseCard: React.FC<ExerciseCardProps> = ({ 
-  title, 
-  level, 
-  imageUrl, 
+const ExerciseCard = ({
+  title,
+  level,
+  imageUrl,
   onPress,
   compact = false
-}) => {
+}: ExerciseCardProps): React.ReactElement => {
   return (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={[
-        styles.container, 
+        styles.container,
         compact ? styles.compactContainer : {}
-      ]} 
+      ]}
       onPress={onPress}
       activeOpacity={0.8}
     >
-      <Image 
-        source={{ uri: imageUrl }} 
+      <Image
+        source={{ uri: imageUrl }}
         style={[
           styles.image,
           compact ? styles.compactImage : {}
-        ]} 
-        resizeMode="cover" 
+        ]}
+        resizeMode="cover"
       />
       <View style={styles.overlay} />
       <View style={styles.content}>

@@ -9,12 +9,12 @@ interface SearchBarProps {
   placeholder?: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({
+const SearchBar = ({
   value,
   onChangeText,
   onClear,
-  placeholder = 'Search exercises, skills, workouts...',
-}) => {
+  placeholder = 'Search exercises, skills, workouts...'
+}: SearchBarProps): React.ReactElement => {
   return (
     <View style={styles.container}>
       <Search size={20} color="#718096" style={styles.searchIcon} />

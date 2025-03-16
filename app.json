@@ -1,11 +1,10 @@
 {
   "expo": {
     "name": "Chikara",
-    "slug": "Chikara calisthenics free for everyone",
+    "slug": "chikara",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -15,8 +14,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "icon": "./assets/images/icon.png", 
-      "iconDark": "./assets/images/icon-dark.png", 
+      "icon": "./assets/images/icon.png",
+      "iconDark": "./assets/images/icon-dark.png",
       "iconTinted": "./assets/images/icon-tinted.png"
     },
     "web": {
@@ -27,6 +26,7 @@
     "plugins": ["expo-router"],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "scheme": "chikara"
   }
 }

@@ -41,6 +41,29 @@ export default function HomeScreen() {
             contentContainerStyle={styles.horizontalList}
           />
 
+          {/* Featured Exercises */}
+          <SectionHeader 
+            title="Featured Exercises" 
+            onSeeAll={() => router.push('/search')} 
+          />
+          
+          <FlatList
+            data={exercises.slice(0, 3)}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <ExerciseCard
+                title={item.title}
+                level={item.level}
+                imageUrl={item.imageUrl}
+                onPress={() => router.push(`/exercises/${item.id}`)}
+                compact
+              />
+            )}
+            keyExtractor={item => item.id}
+            contentContainerStyle={styles.horizontalList}
+          />
+
           {/* Featured Workouts */}
           <SectionHeader 
             title="Featured Workouts" 
@@ -54,7 +77,7 @@ export default function HomeScreen() {
             ]}>
               <ExerciseCard
                 title={workout.title}
-                level={workout.muscleGroup}
+                level={`${workout.muscleGroup} workout`}
                 imageUrl={workout.imageUrl}
                 onPress={() => router.push(`/workouts/${workout.id}`)}
               />

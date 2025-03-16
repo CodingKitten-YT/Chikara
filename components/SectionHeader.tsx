@@ -7,7 +7,10 @@ interface SectionHeaderProps {
   onSeeAll?: () => void;
 }
 
-const SectionHeader: React.FC<SectionHeaderProps> = ({ title, onSeeAll }) => {
+const SectionHeader = ({ 
+  title, 
+  onSeeAll 
+}: SectionHeaderProps): React.ReactElement => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
