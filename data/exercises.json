@@ -35,7 +35,7 @@
       "level": "Beginner",
       "imageUrl": "https://images.unsplash.com/photo-1649887974297-4be052375a67?q=80&w=2574&auto=format&fit=crop",
       "description": "The bodyweight squat is a fundamental lower body exercise that targets the quadriceps, hamstrings, and glutes.",
-      "muscleGroups": ["quadriceps", "hamstrings", "glutes"],
+      "muscleGroups": ["legs", "quadriceps", "hamstrings", "glutes"],
       "steps": [
         "Stand with your feet shoulder-width apart",
         "Lower your body by bending your knees and pushing your hips back",

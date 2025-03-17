@@ -5,7 +5,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import SearchBar from '../../components/SearchBar';
 import CategoryPill from '../../components/CategoryPill';
 import ExerciseCard from '../../components/ExerciseCard';
-import { exercises, workouts, muscleGroups, Exercise, Workout } from '../../data/data';
+import { exercises, workouts, muscleGroups } from '../../data/data';
 import { Ionicons } from '@expo/vector-icons';
 
 // Define the combined search result type
@@ -95,7 +95,8 @@ export default function SearchScreen() {
       ...workout,
       type: 'workout' as const,
       level: workout.levels[0].difficulty,
-      muscleGroup: workout.muscleGroup
+      muscleGroup: workout.muscleGroup,
+      difficulty: workout.levels[0].difficulty // Add this line to fix the type error
     }));
   }, [searchQuery, selectedCategory, filters]);
 
@@ -274,13 +275,15 @@ export default function SearchScreen() {
       <View style={styles.content}>
         {/* Search and Filter Bar */}
         <View style={styles.searchContainer}>
-          <SearchBar
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            onClear={handleClearSearch}
-            style={styles.searchBar}
-            placeholder="Search exercises & workouts..."
-          />
+          {/* Fix for the SearchBar style prop issue */}
+          <View style={styles.searchBar}>
+            <SearchBar
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              onClear={handleClearSearch}
+              placeholder="Search exercises & workouts..."
+            />
+          </View>
           <TouchableOpacity 
             style={[
               styles.filterButton,
@@ -424,7 +427,6 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
     borderRadius: 12,
     shadowColor: '#64748B',
     shadowOffset: { width: 0, height: 2 },
