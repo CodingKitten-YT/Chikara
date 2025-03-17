@@ -4,11 +4,10 @@ import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import ExerciseCard from '../../components/ExerciseCard';
 import SectionHeader from '../../components/SectionHeader';
-import { exercises, workouts, muscleGroups, filterWorkoutsByMuscleGroup } from '../../data/data';
+import { exercises, workouts, muscleGroups } from '../../data/data';
 
 export default function HomeScreen() {
   const handleMuscleGroupPress = (muscleGroupId: string) => {
-    // Filter workouts and navigate to search with filtered results
     router.push({
       pathname: '/search',
       params: { muscleGroup: muscleGroupId }
@@ -30,28 +29,28 @@ export default function HomeScreen() {
 
         {/* Content Container */}
         <View style={styles.content}>
-          {/* Muscle Groups */}
-          <SectionHeader 
-            title="Muscle Groups" 
-            onSeeAll={() => router.push('/search')} 
-          />
-          
-          <FlatList
-            data={muscleGroups.filter(group => group.id !== 'all')}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.muscleGroupCard}
-                onPress={() => handleMuscleGroupPress(item.id)}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.muscleGroupTitle}>{item.label}</Text>
-              </TouchableOpacity>
-            )}
-            keyExtractor={item => item.id}
-            contentContainerStyle={styles.horizontalList}
-          />
+          {/* Muscle Groups Section */}
+            <SectionHeader 
+              title="Train by Muscle Group" 
+              onSeeAll={() => router.push('/search')} 
+            />
+            
+            <FlatList
+              data={muscleGroups.filter(group => group.id !== 'all')}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.muscleGroupCard}
+                  onPress={() => handleMuscleGroupPress(item.id)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.muscleGroupTitle}>{item.label}</Text>
+                </TouchableOpacity>
+              )}
+              keyExtractor={item => item.id}
+              contentContainerStyle={styles.horizontalList}
+            />
 
           {/* Featured Exercises */}
           <SectionHeader 
