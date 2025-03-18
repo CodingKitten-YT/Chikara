@@ -7,8 +7,8 @@ import CategoryPill from '../../components/CategoryPill';
 import ExerciseCard from '../../components/ExerciseCard';
 import { exercises, workouts, muscleGroups } from '../../data/data';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../../contexts/ThemeContext';
 
-// Define the combined search result type
 type SearchResult = {
   id: string;
   title: string;
@@ -20,7 +20,6 @@ type SearchResult = {
   difficulty: 'beginner' | 'intermediate' | 'advanced' | 'expert';
 };
 
-// Define filter options
 interface FilterOptions {
   difficulty: 'all' | 'beginner' | 'intermediate' | 'advanced' | 'expert';
   resultType: 'all' | 'exercise' | 'workout';
@@ -29,8 +28,8 @@ interface FilterOptions {
 export default function SearchScreen() {
   const router = useRouter();
   const { muscleGroup: initialMuscleGroup } = useLocalSearchParams<{ muscleGroup?: string }>();
+  const { colors, theme } = useTheme();
   
-  // State management
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -39,28 +38,23 @@ export default function SearchScreen() {
     resultType: 'all'
   });
 
-  // Set the initial muscle group when component mounts or when the param changes
   useEffect(() => {
     if (initialMuscleGroup) {
       setSelectedCategory(initialMuscleGroup);
     }
   }, [initialMuscleGroup]);
 
-  // Filter exercises based on search query, selected category and difficulty
   const filteredExercises = useMemo(() => {
     if (filters.resultType === 'workout') return [];
     
     return exercises.filter(exercise => {
-      // Filter by search query
       const matchesSearch = !searchQuery || 
         exercise.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         exercise.description.toLowerCase().includes(searchQuery.toLowerCase());
       
-      // Filter by muscle group
       const matchesMuscleGroup = selectedCategory === 'all' || 
         exercise.muscleGroups.includes(selectedCategory);
       
-      // Filter by difficulty
       const matchesDifficulty = filters.difficulty === 'all' || 
         exercise.difficulty === filters.difficulty;
       
@@ -72,21 +66,17 @@ export default function SearchScreen() {
     }));
   }, [searchQuery, selectedCategory, filters]);
 
-  // Filter workouts based on search query, selected category and difficulty
   const filteredWorkouts = useMemo(() => {
     if (filters.resultType === 'exercise') return [];
     
     return workouts.filter(workout => {
-      // Filter by search query
       const matchesSearch = !searchQuery || 
         workout.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         workout.description.toLowerCase().includes(searchQuery.toLowerCase());
       
-      // Filter by muscle group
       const matchesMuscleGroup = selectedCategory === 'all' || 
         workout.muscleGroup === selectedCategory;
       
-      // Filter by difficulty (any level matches the difficulty)
       const matchesDifficulty = filters.difficulty === 'all' || 
         workout.levels.some(level => level.difficulty === filters.difficulty);
       
@@ -96,61 +86,50 @@ export default function SearchScreen() {
       type: 'workout' as const,
       level: workout.levels[0].difficulty,
       muscleGroup: workout.muscleGroup,
-      difficulty: workout.levels[0].difficulty // Add this line to fix the type error
+      difficulty: workout.levels[0].difficulty
     }));
   }, [searchQuery, selectedCategory, filters]);
 
-  // Combine and sort results
   const searchResults: SearchResult[] = useMemo(() => {
     const combined = [...filteredWorkouts, ...filteredExercises];
     
-    // Sort by relevance if searching, otherwise sort alphabetically
     if (searchQuery) {
       return combined.sort((a, b) => {
-        // Exact title matches first
         const aExactMatch = a.title.toLowerCase() === searchQuery.toLowerCase();
         const bExactMatch = b.title.toLowerCase() === searchQuery.toLowerCase();
         
         if (aExactMatch && !bExactMatch) return -1;
         if (!aExactMatch && bExactMatch) return 1;
         
-        // Starts with the search term next
         const aStartsWith = a.title.toLowerCase().startsWith(searchQuery.toLowerCase());
         const bStartsWith = b.title.toLowerCase().startsWith(searchQuery.toLowerCase());
         
         if (aStartsWith && !bStartsWith) return -1;
         if (!aStartsWith && bStartsWith) return 1;
         
-        // Alphabetical as fallback
         return a.title.localeCompare(b.title);
       });
     } else {
-      // Default sorting is alphabetical
       return combined.sort((a, b) => a.title.localeCompare(b.title));
     }
   }, [filteredWorkouts, filteredExercises, searchQuery]);
 
-  // Handle category selection
   const handleCategorySelect = useCallback((categoryId: string) => {
     setSelectedCategory(categoryId);
-    // Clear the route param without full navigation
     if (initialMuscleGroup) {
       router.setParams({});
     }
   }, [initialMuscleGroup, router]);
 
-  // Clear the search query
   const handleClearSearch = useCallback(() => {
     setSearchQuery('');
   }, []);
 
-  // Apply filters
   const applyFilters = useCallback((newFilters: FilterOptions) => {
     setFilters(newFilters);
     setShowFilterModal(false);
   }, []);
 
-  // Reset filters
   const resetFilters = useCallback(() => {
     setFilters({
       difficulty: 'all',
@@ -158,7 +137,6 @@ export default function SearchScreen() {
     });
   }, []);
 
-  // Get active filter count
   const activeFilterCount = useMemo(() => {
     let count = 0;
     if (filters.difficulty !== 'all') count++;
@@ -166,41 +144,41 @@ export default function SearchScreen() {
     return count;
   }, [filters]);
 
-  // Render filter modal/panel
   const renderFilterModal = () => {
     if (!showFilterModal) return null;
     
     return (
-      <View style={styles.modalOverlay}>
-        <View style={styles.filterModal}>
+      <View style={[styles.modalOverlay, { backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}>
+        <View style={[styles.filterModal, { backgroundColor: colors.surface }]}>
           <View style={styles.filterHeader}>
-            <Text style={styles.filterTitle}>Filter Results</Text>
+            <Text style={[styles.filterTitle, { color: colors.text }]}>Filter Results</Text>
             <TouchableOpacity 
-              style={styles.closeButton} 
+              style={[styles.closeButton, { backgroundColor: colors.searchBackground }]} 
               onPress={() => setShowFilterModal(false)}
             >
-              <Ionicons name="close" size={24} color="#1E293B" />
+              <Ionicons name="close" size={24} color={colors.text} />
             </TouchableOpacity>
           </View>
           
-          <View style={styles.modalDivider} />
+          <View style={[styles.modalDivider, { backgroundColor: colors.border }]} />
           
-          {/* Difficulty Filter */}
           <View style={styles.filterSection}>
-            <Text style={styles.filterSectionTitle}>Difficulty</Text>
+            <Text style={[styles.filterSectionTitle, { color: colors.text }]}>Difficulty</Text>
             <View style={styles.filterOptions}>
               {['all', 'beginner', 'intermediate', 'advanced', 'expert'].map(difficulty => (
                 <TouchableOpacity 
                   key={difficulty} 
                   style={[
                     styles.filterOption,
-                    filters.difficulty === difficulty && styles.filterOptionSelected
+                    { backgroundColor: colors.searchBackground, borderColor: colors.border },
+                    filters.difficulty === difficulty && { backgroundColor: colors.primary }
                   ]}
                   onPress={() => setFilters({...filters, difficulty: difficulty as any})}
                 >
                   <Text style={[
                     styles.filterOptionText,
-                    filters.difficulty === difficulty && styles.filterOptionTextSelected
+                    { color: colors.text },
+                    filters.difficulty === difficulty && { color: '#FFFFFF' }
                   ]}>
                     {difficulty === 'all' ? 'All Levels' : difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
                   </Text>
@@ -209,22 +187,23 @@ export default function SearchScreen() {
             </View>
           </View>
           
-          {/* Result Type Filter */}
           <View style={styles.filterSection}>
-            <Text style={styles.filterSectionTitle}>Type</Text>
+            <Text style={[styles.filterSectionTitle, { color: colors.text }]}>Type</Text>
             <View style={styles.filterOptions}>
               {['all', 'exercise', 'workout'].map(type => (
                 <TouchableOpacity 
                   key={type} 
                   style={[
                     styles.filterOption,
-                    filters.resultType === type && styles.filterOptionSelected
+                    { backgroundColor: colors.searchBackground, borderColor: colors.border },
+                    filters.resultType === type && { backgroundColor: colors.primary }
                   ]}
                   onPress={() => setFilters({...filters, resultType: type as any})}
                 >
                   <Text style={[
                     styles.filterOptionText,
-                    filters.resultType === type && styles.filterOptionTextSelected
+                    { color: colors.text },
+                    filters.resultType === type && { color: '#FFFFFF' }
                   ]}>
                     {type === 'all' ? 'All Types' : type.charAt(0).toUpperCase() + type.slice(1) + 's'}
                   </Text>
@@ -233,16 +212,15 @@ export default function SearchScreen() {
             </View>
           </View>
           
-          {/* Filter Actions */}
           <View style={styles.filterActions}>
             <TouchableOpacity 
-              style={styles.resetButton} 
+              style={[styles.resetButton, { borderColor: colors.border }]} 
               onPress={resetFilters}
             >
-              <Text style={styles.resetButtonText}>Reset</Text>
+              <Text style={[styles.resetButtonText, { color: colors.textSecondary }]}>Reset</Text>
             </TouchableOpacity>
             <TouchableOpacity 
-              style={styles.applyButton} 
+              style={[styles.applyButton, { backgroundColor: colors.primary }]} 
               onPress={() => applyFilters(filters)}
             >
               <Text style={styles.applyButtonText}>Apply Filters</Text>
@@ -253,7 +231,6 @@ export default function SearchScreen() {
     );
   };
 
-  // Render each item
   const renderSearchItem = useCallback(({ item }: { item: SearchResult }) => (
     <ExerciseCard
       title={item.title}
@@ -265,17 +242,15 @@ export default function SearchScreen() {
   ), [router]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="dark" />
-      <View style={styles.header}>
-        <Text style={styles.title}>Search</Text>
-        <Text style={styles.subtitle}>Find exercises and workouts</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
+      <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <Text style={[styles.title, { color: colors.text }]}>Search</Text>
+        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Find exercises and workouts</Text>
       </View>
 
       <View style={styles.content}>
-        {/* Search and Filter Bar */}
         <View style={styles.searchContainer}>
-          {/* Fix for the SearchBar style prop issue */}
           <View style={styles.searchBar}>
             <SearchBar
               value={searchQuery}
@@ -287,11 +262,16 @@ export default function SearchScreen() {
           <TouchableOpacity 
             style={[
               styles.filterButton,
-              activeFilterCount > 0 && styles.filterButtonActive
+              { backgroundColor: colors.surface, borderColor: colors.border },
+              activeFilterCount > 0 && { backgroundColor: colors.primary }
             ]}
             onPress={() => setShowFilterModal(true)}
           >
-            <Ionicons name="filter" size={22} color={activeFilterCount > 0 ? "#FFFFFF" : "#1E293B"} />
+            <Ionicons 
+              name="filter" 
+              size={22} 
+              color={activeFilterCount > 0 ? "#FFFFFF" : colors.text} 
+            />
             {activeFilterCount > 0 && (
               <View style={styles.filterBadge}>
                 <Text style={styles.filterBadgeText}>{activeFilterCount}</Text>
@@ -300,7 +280,6 @@ export default function SearchScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Category Filters */}
         <View style={styles.categoriesContainer}>
           <FlatList
             data={[{id: 'all', label: 'All Categories'}, ...muscleGroups.filter(group => group.id !== 'all')]}
@@ -318,10 +297,9 @@ export default function SearchScreen() {
           />
         </View>
 
-        {/* Results Stats */}
         {searchResults.length > 0 && (
           <View style={styles.resultsHeader}>
-            <Text style={styles.resultsCount}>
+            <Text style={[styles.resultsCount, { color: colors.textSecondary }]}>
               {searchResults.length} {searchResults.length === 1 ? 'result' : 'results'}
               {filters.difficulty !== 'all' && ` • ${filters.difficulty}`}
               {filters.resultType !== 'all' && ` • ${filters.resultType}s`}
@@ -336,13 +314,12 @@ export default function SearchScreen() {
                   }
                 }}
               >
-                <Text style={styles.clearFilters}>Clear All</Text>
+                <Text style={[styles.clearFilters, { color: colors.primary }]}>Clear All</Text>
               </TouchableOpacity>
             )}
           </View>
         )}
 
-        {/* Search Results */}
         {searchResults.length > 0 ? (
           <FlatList
             data={searchResults}
@@ -353,16 +330,16 @@ export default function SearchScreen() {
           />
         ) : (
           <View style={styles.emptyContainer}>
-            <Ionicons name="search-outline" size={64} color="#CAD5C5" style={styles.emptyIcon} />
-            <Text style={styles.emptyText}>No results found</Text>
-            <Text style={styles.emptySubtext}>
+            <Ionicons name="search-outline" size={64} color={colors.border} style={styles.emptyIcon} />
+            <Text style={[styles.emptyText, { color: colors.text }]}>No results found</Text>
+            <Text style={[styles.emptySubtext, { color: colors.textSecondary }]}>
               {searchQuery ? 
                 `No matches for "${searchQuery}"` : 
                 'Try a different category or filter'}
             </Text>
             {(searchQuery || selectedCategory !== 'all' || filters.difficulty !== 'all' || filters.resultType !== 'all') && (
               <TouchableOpacity 
-                style={styles.resetSearchButton}
+                style={[styles.resetSearchButton, { backgroundColor: colors.primary }]}
                 onPress={() => {
                   setSearchQuery('');
                   setSelectedCategory('all');
@@ -379,7 +356,6 @@ export default function SearchScreen() {
         )}
       </View>
 
-      {/* Filter Modal */}
       {renderFilterModal()}
     </SafeAreaView>
   );
@@ -388,16 +364,12 @@ export default function SearchScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
   },
   header: {
     paddingTop: 40,
     paddingHorizontal: 24,
     paddingBottom: 24,
-    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#EDF2F7',
-    shadowColor: '#64748B',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 10,
@@ -407,13 +379,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: '800',
-    color: '#1E293B',
     marginBottom: 4,
     letterSpacing: -0.5,
   },
   subtitle: {
     fontSize: 16,
-    color: '#64748B',
     fontWeight: '500',
   },
   content: {
@@ -428,7 +398,6 @@ const styles = StyleSheet.create({
   searchBar: {
     flex: 1,
     borderRadius: 12,
-    shadowColor: '#64748B',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 8,
@@ -439,20 +408,13 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 12,
-    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
-    shadowColor: '#64748B',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
-  },
-  filterButtonActive: {
-    backgroundColor: '#769267',
-    borderColor: '#769267',
   },
   filterBadge: {
     position: 'absolute',
@@ -488,12 +450,10 @@ const styles = StyleSheet.create({
   },
   resultsCount: {
     fontSize: 14,
-    color: '#64748B',
     fontWeight: '600',
   },
   clearFilters: {
     fontSize: 14,
-    color: '#769267',
     fontWeight: '600',
   },
   resultsList: {
@@ -512,12 +472,10 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#2D3748',
     marginBottom: 8,
   },
   emptySubtext: {
     fontSize: 16,
-    color: '#718096',
     textAlign: 'center',
     marginBottom: 24,
     maxWidth: '80%',
@@ -525,9 +483,7 @@ const styles = StyleSheet.create({
   resetSearchButton: {
     paddingVertical: 12,
     paddingHorizontal: 24,
-    backgroundColor: '#769267',
     borderRadius: 12,
-    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -544,17 +500,14 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'flex-end',
     zIndex: 1000,
   },
   filterModal: {
-    backgroundColor: 'white',
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     padding: 24,
     paddingBottom: 36,
-    shadowColor: '#000',
     shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
@@ -569,19 +522,16 @@ const styles = StyleSheet.create({
   filterTitle: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#1E293B',
   },
   closeButton: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#F1F5F9',
     alignItems: 'center',
     justifyContent: 'center',
   },
   modalDivider: {
     height: 1,
-    backgroundColor: '#E2E8F0',
     marginBottom: 24,
   },
   filterSection: {
@@ -590,7 +540,6 @@ const styles = StyleSheet.create({
   filterSectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1E293B',
     marginBottom: 16,
   },
   filterOptions: {
@@ -602,22 +551,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 50,
-    backgroundColor: '#F1F5F9',
     marginHorizontal: 4,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  filterOptionSelected: {
-    backgroundColor: '#769267',
-    borderColor: '#769267',
   },
   filterOptionText: {
-    color: '#1E293B',
     fontWeight: '500',
-  },
-  filterOptionTextSelected: {
-    color: 'white',
   },
   filterActions: {
     flexDirection: 'row',
@@ -629,13 +568,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
     alignItems: 'center',
     justifyContent: 'center',
     width: '30%',
   },
   resetButtonText: {
-    color: '#64748B',
     fontWeight: '600',
     fontSize: 16,
   },
@@ -643,11 +580,9 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 24,
     borderRadius: 12,
-    backgroundColor: '#769267',
     alignItems: 'center',
     justifyContent: 'center',
     width: '65%',
-    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,

@@ -5,8 +5,11 @@ import { StatusBar } from 'expo-status-bar';
 import ExerciseCard from '../../components/ExerciseCard';
 import SectionHeader from '../../components/SectionHeader';
 import { exercises, workouts, muscleGroups } from '../../data/data';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export default function HomeScreen() {
+  const { colors, theme } = useTheme();
+
   const handleMuscleGroupPress = (muscleGroupId: string) => {
     router.push({
       pathname: '/search',
@@ -15,42 +18,42 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="dark" />
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
       <ScrollView 
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
         {/* Header Section */}
-        <View style={styles.header}>
-          <Text style={styles.greeting}>Welcome Back, Name! 👋</Text>
-          <Text style={styles.subtitle}>Let's make today count</Text>
+        <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+          <Text style={[styles.greeting, { color: colors.text }]}>Welcome Back, Name! 👋</Text>
+          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Let's make today count</Text>
         </View>
 
         {/* Content Container */}
         <View style={styles.content}>
           {/* Muscle Groups Section */}
-            <SectionHeader 
-              title="Train by Muscle Group" 
-              onSeeAll={() => router.push('/search')} 
-            />
+          <SectionHeader 
+            title="Train by Muscle Group" 
+            onSeeAll={() => router.push('/search')} 
+          />
             
-            <FlatList
-              data={muscleGroups.filter(group => group.id !== 'all')}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.muscleGroupCard}
-                  onPress={() => handleMuscleGroupPress(item.id)}
-                  activeOpacity={0.7}
-                >
-                  <Text style={styles.muscleGroupTitle}>{item.label}</Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={item => item.id}
-              contentContainerStyle={styles.horizontalList}
-            />
+          <FlatList
+            data={muscleGroups.filter(group => group.id !== 'all')}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[styles.muscleGroupCard, { backgroundColor: colors.primary }]}
+                onPress={() => handleMuscleGroupPress(item.id)}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.muscleGroupTitle}>{item.label}</Text>
+              </TouchableOpacity>
+            )}
+            keyExtractor={item => item.id}
+            contentContainerStyle={styles.horizontalList}
+          />
 
           {/* Featured Exercises */}
           <SectionHeader 
@@ -104,7 +107,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
   },
   scrollContent: {
     paddingBottom: 40,
@@ -113,9 +115,7 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     paddingHorizontal: 24,
     paddingBottom: 24,
-    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#EDF2F7',
     shadowColor: '#64748B',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -126,13 +126,11 @@ const styles = StyleSheet.create({
   greeting: {
     fontSize: 28,
     fontWeight: '800',
-    color: '#1E293B',
     marginBottom: 4,
     letterSpacing: -0.5,
   },
   subtitle: {
     fontSize: 16,
-    color: '#64748B',
     fontWeight: '500',
   },
   content: {
@@ -142,7 +140,6 @@ const styles = StyleSheet.create({
     paddingRight: 24,
   },
   muscleGroupCard: {
-    backgroundColor: '#769267',
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderRadius: 12,

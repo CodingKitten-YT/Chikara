@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { ChevronRight } from 'lucide-react-native';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface SectionHeaderProps {
   title: string;
@@ -11,13 +12,15 @@ const SectionHeader = ({
   title, 
   onSeeAll 
 }: SectionHeaderProps): React.ReactElement => {
+  const { colors } = useTheme();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
+      <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
       {onSeeAll && (
         <TouchableOpacity style={styles.seeAllButton} onPress={onSeeAll}>
-          <Text style={styles.seeAllText}>See All</Text>
-          <ChevronRight size={16} color="#3182CE" />
+          <Text style={[styles.seeAllText, { color: colors.primary }]}>See All</Text>
+          <ChevronRight size={16} color={colors.primary} />
         </TouchableOpacity>
       )}
     </View>
@@ -35,7 +38,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontFamily: 'Poppins-SemiBold',
-    color: '#2D3748',
   },
   seeAllButton: {
     flexDirection: 'row',
@@ -44,7 +46,6 @@ const styles = StyleSheet.create({
   seeAllText: {
     fontSize: 14,
     fontFamily: 'Inter-Medium',
-    color: '#3182CE',
     marginRight: 4,
   },
 });

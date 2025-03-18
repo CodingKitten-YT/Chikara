@@ -1,19 +1,21 @@
 import { Tabs } from 'expo-router';
 import { House as Home, Search, Settings } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
+  const { colors, theme } = useTheme();
   
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#769267',
-        tabBarInactiveTintColor: '#718096',
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.tabIconDefault,
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
+          backgroundColor: colors.surface,
           borderTopWidth: 1,
-          borderTopColor: '#E2E8F0',
+          borderTopColor: colors.border,
           height: 60 + insets.bottom,
           paddingBottom: insets.bottom,
           paddingTop: 4,

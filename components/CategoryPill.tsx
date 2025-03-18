@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface CategoryPillProps {
   label: string;
@@ -12,11 +13,14 @@ const CategoryPill: React.FC<CategoryPillProps> = ({
   isSelected,
   onPress,
 }) => {
+  const { colors } = useTheme();
+
   return (
     <TouchableOpacity
       style={[
         styles.container,
-        isSelected ? styles.selectedContainer : {},
+        { backgroundColor: colors.searchBackground },
+        isSelected && { backgroundColor: colors.primary },
       ]}
       onPress={onPress}
       activeOpacity={0.7}
@@ -24,7 +28,8 @@ const CategoryPill: React.FC<CategoryPillProps> = ({
       <Text
         style={[
           styles.label,
-          isSelected ? styles.selectedLabel : {},
+          { color: colors.textSecondary },
+          isSelected && { color: '#FFFFFF' },
         ]}
       >
         {label}
@@ -38,20 +43,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#F7FAFC',
     marginRight: 8,
     marginBottom: 8,
-  },
-  selectedContainer: {
-    backgroundColor: '#769267',
   },
   label: {
     fontSize: 14,
     fontFamily: 'Inter-Medium',
-    color: '#4A5568',
-  },
-  selectedLabel: {
-    color: '#FFFFFF',
   },
 });
 

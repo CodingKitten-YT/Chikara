@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { ArrowRight } from 'lucide-react-native';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface ExerciseCardProps {
   title: string;
@@ -19,13 +20,14 @@ const ExerciseCard = ({
   compact = false,
   tag
 }: ExerciseCardProps): React.ReactElement => {
-  // Capitalize the first letter of the tag if it exists
+  const { colors } = useTheme();
   const formattedTag = tag ? tag.charAt(0).toUpperCase() + tag.slice(1) : null;
 
   return (
     <TouchableOpacity
       style={[
         styles.container,
+        { backgroundColor: colors.cardBackground },
         compact ? styles.compactContainer : {}
       ]}
       onPress={onPress}
@@ -39,24 +41,24 @@ const ExerciseCard = ({
         ]}
         resizeMode="cover"
       />
-      <View style={styles.overlay} />
+      <View style={[styles.overlay, { backgroundColor: colors.exerciseOverlay }]} />
       <View style={styles.content}>
         <View>
           <Text style={styles.title}>{title}</Text>
           <View style={styles.tagsContainer}>
             {formattedTag && (
-              <View style={styles.tagContainer}>
+              <View style={[styles.tagContainer, { backgroundColor: colors.primary }]}>
                 <Text style={styles.tagText}>{formattedTag}</Text>
               </View>
             )}
-            <View style={styles.levelContainer}>
-              <Text style={styles.levelText}>{level}</Text>
+            <View style={[styles.levelContainer, { backgroundColor: colors.levelBadgeBackground }]}>
+              <Text style={[styles.levelText, { color: colors.levelBadgeText }]}>{level}</Text>
             </View>
           </View>
         </View>
         {!compact && (
-          <View style={styles.arrowContainer}>
-            <ArrowRight color="#FFFFFF" size={20} />
+          <View style={[styles.arrowContainer, { backgroundColor: colors.levelBadgeBackground }]}>
+            <ArrowRight color={colors.levelBadgeText} size={20} />
           </View>
         )}
       </View>
@@ -68,7 +70,6 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 16,
     overflow: 'hidden',
-    backgroundColor: '#F7FAFC',
     marginBottom: 16,
     height: 180,
     width: '100%',
@@ -87,7 +88,6 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
   content: {
     position: 'absolute',
@@ -110,7 +110,6 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   tagContainer: {
-    backgroundColor: 'rgba(118, 146, 103, 0.8)',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
@@ -121,18 +120,15 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Medium',
   },
   levelContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
   },
   levelText: {
-    color: '#FFFFFF',
     fontSize: 12,
     fontFamily: 'Poppins-Medium',
   },
   arrowContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     width: 36,
     height: 36,
     borderRadius: 18,
