@@ -22,6 +22,10 @@ export default function WorkoutDetailScreen() {
 
   const currentLevel = workout.levels[selectedLevel];
 
+  const handleStartWorkout = () => {
+    router.push(`/workout/${id}`);
+  };
+
   return (
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
@@ -148,7 +152,7 @@ export default function WorkoutDetailScreen() {
 
         <TouchableOpacity 
           style={[styles.startButton, { backgroundColor: colors.primary }]}
-          onPress={() => {/* TODO: Implement workout start */}}
+          onPress={handleStartWorkout}
         >
           <Text style={styles.startButtonText}>Start Workout</Text>
         </TouchableOpacity>
